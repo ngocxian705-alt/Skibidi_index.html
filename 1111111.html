@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SiKiBiDi Login</title>
+
+<style>
+
+/* ========== NỀN GIF BỰ (MỚI) ========== */
+body {
+    margin: 0;
+    padding: 0;
+    background: url("tumblr_1d630f6c1cc1060d4508b364d7478c12_96bc866c_540.gif") no-repeat center center fixed;
+    background-size: cover;
+    font-family: Arial, sans-serif;
+    color: white;
+}
+
+/* ========== LOGIN BOX ========== */
+#loginBox {
+    width: 85%;
+    max-width: 350px;
+    margin: 90px auto;
+    padding: 18px;
+    text-align: center;
+    border-radius: 15px;
+
+    /* NỀN PHỤ */
+    background: url("d66a1f1b2b3bfe7dffba1a8802402796.gif");
+    background-size: cover;
+    background-position: center;
+
+    /* VIỀN CHẠY GIF */
+    border: 8px solid transparent;
+    border-image: url("9Z0EOC.gif") 30 round; 
+    animation: borderRun 4s linear infinite;
+}
+
+/* Animation cho viền */
+@keyframes borderRun {
+    from { border-image-slice: 10; }
+    to   { border-image-slice: 40; }
+}
+
+input {
+    width: 93%;
+    padding: 10px;
+    margin-top: 7px;
+    border-radius: 6px;
+    border: none;
+}
+
+button {
+    width: 95%;
+    padding: 10px;
+    margin-top: 12px;
+    border: none;
+    background: #0066ff;
+    color: white;
+    font-size: 18px;
+    font-weight: bold;
+    border-radius: 6px;
+}
+
+/* ===== MENU ===== */
+#menu {
+    display: none;
+    text-align: center;
+    padding: 20px;
+}
+
+.box {
+    background: rgba(0,0,0,0.45);
+    border: 2px solid #0099ff;
+    padding: 12px;
+    margin: 12px;
+    border-radius: 10px;
+}
+
+textarea {
+    width: 90%;
+    height: 110px;
+    margin-top: 10px;
+}
+
+</style>
+</head>
+
+<body>
+
+<!-- ========== LOGIN FORM ========== -->
+<div id="loginBox">
+    <h2>Đăng Nhập Hệ Thống</h2>
+    <input id="user" type="text" placeholder="Tên đăng nhập">
+    <input id="pass" type="password" placeholder="Mật khẩu">
+    <button onclick="login()">Đăng Nhập</button>
+</div>
+
+<!-- ========== MENU SAU ĐĂNG NHẬP ========== -->
+<div id="menu">
+    <h1>✨ MENU CHÍNH – SIKIBIDI ✨</h1>
+
+    <!-- CHECK BAN -->
+    <div class="box">
+        <h3>🔍 Check Ban UID</h3>
+        <input id="uid" type="number" placeholder="Nhập UID Free Fire">
+        <button onclick="checkBan()">Kiểm Tra</button>
+        <textarea id="banResult" readonly></textarea>
+    </div>
+
+    <!-- GỬI EMAIL -->
+    <div class="box">
+        <h3>📧 Gửi Email Khôi Phục</h3>
+        <input id="mail" type="email" placeholder="Gmail nhận mã">
+        <button onclick="sendMail()">Gửi</button>
+        <textarea id="mailResult" readonly></textarea>
+    </div>
+
+    <!-- GIA NHẬP CLAN -->
+    <div class="box">
+        <h3>🏹 Join Clan FF</h3>
+        <input id="clanID" type="text" placeholder="UID Quân Đoàn">
+        <input id="token" type="text" placeholder="Token đăng nhập">
+        <button onclick="joinClan()">Thực Hiện</button>
+        <textarea id="clanResult" readonly></textarea>
+    </div>
+
+</div>
+
+<script>
+
+/* ========== LOGIN ========== */
+function login() {
+    let u = document.getElementById("user").value;
+    let p = document.getElementById("pass").value;
+
+    if (u === "admin" && p === "admin") {
+        document.getElementById("loginBox").style.display = "none";
+        document.getElementById("menu").style.display = "block";
+    } else {
+        alert("Sai tài khoản hoặc mật khẩu!");
+    }
+}
+
+/* ========== API CHECK BAN ========== */
+function checkBan() {
+    let uid = document.getElementById("uid").value;
+
+    fetch(`https://amin-team-api.vercel.app/check_banned?player_id=${uid}`)
+        .then(res => res.json())
+        .then(data => {
+            document.getElementById("banResult").value = JSON.stringify(data, null, 2);
+        })
+        .catch(err => {
+            document.getElementById("banResult").value = "Lỗi API !!!\n" + err;
+        });
+}
+
+/* ========== API GỬI EMAIL ========== */
+function sendMail() {
+    let mail = document.getElementById("mail").value;
+
+    fetch(`https://fearless-opt-api.vercel.app/opt?email=${mail}&password=fearless&action=email`)
+        .then(res => res.json())
+        .then(data => {
+            document.getElementById("mailResult").value = JSON.stringify(data, null, 2);
+        })
+        .catch(err => {
+            document.getElementById("mailResult").value = "Lỗi API !!!\n" + err;
+        });
+}
+
+/* ========== API JOIN CLAN ========== */
+function joinClan() {
+    let clan = document.getElementById("clanID").value;
+    let token = document.getElementById("token").value;
+
+    fetch(`https://ffguildapi-live.vercel.app/joinclan?clan_id=${clan}&jwt_token=${token}`)
+        .then(res => res.json())
+        .then(data => {
+            document.getElementById("clanResult").value = JSON.stringify(data, null, 2);
+        })
+        .catch(err => {
+            document.getElementById("clanResult").value = "Lỗi API !!!\n" + err;
+        });
+}
+
+</script>
+
+</body>
+</html>
